@@ -1,8 +1,11 @@
 package it.ricette.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+
 import it.ricette.model.Role;
 
-public interface RoleRepository extends JpaRepository<Role, Integer> {
-	Role findByName(String name);
+import java.util.Optional;
+
+public interface RoleRepository extends JpaRepository<Role, Long> {
+    Optional<Role> findByName(String name);
 }
