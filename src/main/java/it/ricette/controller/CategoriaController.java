@@ -1,45 +1,35 @@
 package it.ricette.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import it.ricette.model.Categoria;
+import org.springframework.web.bind.annotation.*;
+import it.ricette.dto.CategoriaDto;
 import it.ricette.service.CategoriaService;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/categorie")
 public class CategoriaController {
-	@Autowired
-	private CategoriaService categoriaService;
-
-    public CategoriaController(CategoriaService CategoriaService) {
-        this.categoriaService = CategoriaService;
-    }
     
+    @Autowired
+    private CategoriaService categoriaService;
+
     @PostMapping("/crea-categoria")
-    public ResponseEntity<Categoria> createCategoria(@RequestBody Categoria categoria) {
-        return ResponseEntity.ok(categoriaService.saveCategoria(categoria));
+    public ResponseEntity<CategoriaDto> createCategoria(@RequestBody CategoriaDto categoriaDto) {
+        CategoriaDto savedCategoriaDto = categoriaService.saveCategoria(categoriaDto);
+        return ResponseEntity.ok(savedCategoriaDto);
     }
     
     @GetMapping("/get/{id}")
-    public ResponseEntity<Categoria> getCategoriaById(@PathVariable Integer id) {
-        return categoriaService.getCategoriaById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<CategoriaDto> getCategoriaById(@PathVariable Integer id) {
+        CategoriaDto categoriaDto = categoriaService.getCategoriaById(id);
+        return ResponseEntity.ok(categoriaDto);
     }
     
     @GetMapping("/lista")
-    public ResponseEntity<List<Categoria>> getAllRicette() {
-        return ResponseEntity.ok(categoriaService.findAllCategorie());
+    public ResponseEntity<List<CategoriaDto>> getAllCategorie() {
+        List<CategoriaDto> categorie = categoriaService.findAllCategorie();
+        return ResponseEntity.ok(categorie);
     }
     
     @DeleteMapping("/delete/{id}")
@@ -47,5 +37,4 @@ public class CategoriaController {
         categoriaService.deleteCategoria(id);
         return ResponseEntity.ok().build();
     }
-
 }

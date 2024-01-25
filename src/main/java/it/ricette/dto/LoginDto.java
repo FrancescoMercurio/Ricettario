@@ -6,7 +6,8 @@ import lombok.Data;
 public class LoginDto {
     private String usernameOrEmail;
     private String password;
-	public String getUsernameOrEmail() {
+	
+    public String getUsernameOrEmail() {
 		return usernameOrEmail;
 	}
 	public void setUsernameOrEmail(String usernameOrEmail) {
