@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import it.ricette.NotFoundException;
@@ -13,6 +15,7 @@ import it.ricette.service.RicettaService;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/ricette")
 public class RicettaController {
@@ -21,6 +24,7 @@ public class RicettaController {
     private RicettaService ricettaService;
 
     @PostMapping("/crea-ricetta")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")//@Secured("ROLE_ADMIN")
     public ResponseEntity<RicettaDto> createRicetta(@RequestBody RicettaDto ricettaDto) {
         RicettaDto savedRicettaDto = ricettaService.saveRicetta(ricettaDto);
         return ResponseEntity.ok(savedRicettaDto);
@@ -46,12 +50,14 @@ public class RicettaController {
     }
 
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<RicettaDto> updateRicetta(@PathVariable Integer id, @RequestBody RicettaDto ricettaDto) {
         RicettaDto updatedRicettaDto = ricettaService.updateRicetta(id, ricettaDto);
         return ResponseEntity.ok(updatedRicettaDto);
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> deleteRicetta(@PathVariable Integer id) {
         ricettaService.deleteRicetta(id);
         return ResponseEntity.ok().build();

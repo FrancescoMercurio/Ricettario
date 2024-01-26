@@ -1,23 +1,27 @@
 package it.ricette.dto;
 
-import lombok.Data;
+import jakarta.validation.constraints.NotBlank;
 
-@Data
 public class LoginDto {
-    private String usernameOrEmail;
-    private String password;
-	
-    public String getUsernameOrEmail() {
-		return usernameOrEmail;
+	@NotBlank
+  private String username;
+
+	@NotBlank
+	private String password;
+
+	public String getUsername() {
+		return username;
 	}
-	public void setUsernameOrEmail(String usernameOrEmail) {
-		this.usernameOrEmail = usernameOrEmail;
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
+
 	public String getPassword() {
 		return password;
 	}
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
-    
 }
