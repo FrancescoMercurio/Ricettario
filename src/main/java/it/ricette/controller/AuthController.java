@@ -19,6 +19,7 @@ import it.ricette.dto.LoginDto;
 import it.ricette.dto.SignUpDto;
 import it.ricette.model.Role;
 import it.ricette.model.User;
+import it.ricette.service.JwtTokenProvider;
 
 import java.util.Collections;
 
@@ -28,6 +29,9 @@ public class AuthController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+    
+    @Autowired
+    private JwtTokenProvider tokenProvider;
 
     @Autowired
     private UserRepository userRepository;
@@ -39,12 +43,16 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/signin")
-    public ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto){
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginDto.getUsernameOrEmail(), loginDto.getPassword()));
+    public ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginDto.getUsernameOrEmail(), 
+                        loginDto.getPassword())
+        );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return new ResponseEntity<>("User signed-in successfully!.", HttpStatus.OK);
+        String jwt = tokenProvider.generateToken(authentication);
+        return new ResponseEntity<>(jwt, HttpStatus.OK);
     }
 
     @PostMapping("/signup")
