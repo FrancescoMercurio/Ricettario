@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import it.ricette.NotFoundException;
 import it.ricette.dto.RicettaDto;
-import it.ricette.model.Ricetta;
 import it.ricette.service.RicettaService;
 
 import java.util.List;

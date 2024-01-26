@@ -60,7 +60,7 @@ public class RicettaService {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Ricetta> cq = cb.createQuery(Ricetta.class);
         Root<Ricetta> ricetta = cq.from(Ricetta.class);
-        Predicate titoloPredicate = cb.equal(ricetta.get("titolo"), titolo);
+        Predicate titoloPredicate = cb.like(cb.lower(ricetta.get("titolo")), "%" + titolo.toLowerCase() + "%");
         cq.where(titoloPredicate);
 
         List<Ricetta> ricette = entityManager.createQuery(cq).getResultList();
