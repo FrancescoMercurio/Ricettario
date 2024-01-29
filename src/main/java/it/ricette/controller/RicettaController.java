@@ -5,12 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import it.ricette.NotFoundException;
 import it.ricette.dto.RicettaDto;
+import it.ricette.exception.NotFoundException;
+import it.ricette.exception.TokenBlacklistedException;
 import it.ricette.service.RicettaService;
 
 import java.util.List;
@@ -66,5 +66,10 @@ public class RicettaController {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<?> handleNotFoundException(NotFoundException ex) {
         return new ResponseEntity<>("Ricetta non trovata: " + ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+    
+    @ExceptionHandler(TokenBlacklistedException.class)
+    public ResponseEntity<?> handleTokenBlacklistedException(TokenBlacklistedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
 }

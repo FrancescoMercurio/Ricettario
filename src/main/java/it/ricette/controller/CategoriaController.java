@@ -1,9 +1,12 @@
 package it.ricette.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import it.ricette.dto.CategoriaDto;
+import it.ricette.exception.TokenBlacklistedException;
 import it.ricette.service.CategoriaService;
 import java.util.List;
 
@@ -15,6 +18,7 @@ public class CategoriaController {
     private CategoriaService categoriaService;
 
     @PostMapping("/crea-categoria")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<CategoriaDto> createCategoria(@RequestBody CategoriaDto categoriaDto) {
         CategoriaDto savedCategoriaDto = categoriaService.saveCategoria(categoriaDto);
         return ResponseEntity.ok(savedCategoriaDto);
@@ -33,8 +37,14 @@ public class CategoriaController {
     }
     
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> deleteCategoria(@PathVariable Integer id) {
         categoriaService.deleteCategoria(id);
         return ResponseEntity.ok().build();
+    }
+    
+    @ExceptionHandler(TokenBlacklistedException.class)
+    public ResponseEntity<?> handleTokenBlacklistedException(TokenBlacklistedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
 }

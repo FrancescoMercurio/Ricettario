@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import it.ricette.mapper.CategoriaMapper;
 import it.ricette.model.Categoria;
 import it.ricette.dto.CategoriaDto;
-import it.ricette.NotFoundException;
+import it.ricette.exception.NotFoundException;
 import it.ricette.dao.CategoriaRepository;
 import java.util.List;
 import java.util.stream.Collectors;

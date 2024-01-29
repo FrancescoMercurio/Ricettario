@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import it.ricette.exception.TokenBlacklistedException;
 import it.ricette.service.TokenBlacklistService;
 import it.ricette.service.UserDetailsServiceImpl;
 
@@ -36,26 +37,27 @@ public class AuthTokenFilter extends OncePerRequestFilter {
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
-    try {
-      String jwt = parseJwt(request);
-      if (jwt != null && jwtUtils.validateJwtToken(jwt) && !tokenBlacklistService.isTokenBlacklisted(jwt)) {
-        String username = jwtUtils.getUserNameFromJwtToken(jwt);
-
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        UsernamePasswordAuthenticationToken authentication =
-            new UsernamePasswordAuthenticationToken(
-                userDetails,
-                null,
-                userDetails.getAuthorities());
-        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+      try {
+          String jwt = parseJwt(request);
+          if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+              if (tokenBlacklistService.isTokenBlacklisted(jwt)) {
+                  throw new TokenBlacklistedException("Token is blacklisted");
+              }
+              String username = jwtUtils.getUserNameFromJwtToken(jwt);
+              UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+              UsernamePasswordAuthenticationToken authentication =
+                  new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+              authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+              SecurityContextHolder.getContext().setAuthentication(authentication);
+          }
+      } catch (TokenBlacklistedException e) {
+          logger.error("Error in token blacklist verification: {}", e.getMessage());
+          throw e;
+      } catch (Exception e) {
+          logger.error("Cannot set user authentication: {}", e);
       }
-    } catch (Exception e) {
-      logger.error("Cannot set user authentication: {}", e);
-    }
 
-    filterChain.doFilter(request, response);
+      filterChain.doFilter(request, response);
   }
 
   private String parseJwt(HttpServletRequest request) {

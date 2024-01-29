@@ -5,9 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import it.ricette.NotFoundException;
 import it.ricette.dao.RicettaRepository;
 import it.ricette.dto.RicettaDto;
+import it.ricette.exception.NotFoundException;
 import it.ricette.mapper.CategoriaMapper;
 import it.ricette.mapper.RicettaMapper;
 import it.ricette.model.Categoria;

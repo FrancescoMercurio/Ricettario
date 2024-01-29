@@ -1,4 +1,4 @@
-package it.ricette;
+package it.ricette.exception;
 
 public class NotFoundException extends RuntimeException {
    
