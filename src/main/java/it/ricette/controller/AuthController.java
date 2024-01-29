@@ -6,12 +6,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,7 +30,9 @@ import it.ricette.jwt.JwtUtils;
 import it.ricette.model.ERole;
 import it.ricette.model.Role;
 import it.ricette.model.User;
+import it.ricette.service.TokenBlacklistService;
 import it.ricette.service.UserDetailsImpl;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -49,6 +53,27 @@ public class AuthController {
 
   @Autowired
   JwtUtils jwtUtils;
+  
+  @Autowired
+  private TokenBlacklistService tokenBlacklistService;
+
+  @PostMapping("/logout")
+  public ResponseEntity<?> logoutUser(HttpServletRequest request) {
+      String jwt = parseJwt(request);
+      if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+          tokenBlacklistService.blacklistToken(jwt);
+          return new ResponseEntity<>("User logged out successfully", HttpStatus.OK);
+      }
+      return new ResponseEntity<>("Invalid token", HttpStatus.BAD_REQUEST);
+  }
+
+  private String parseJwt(HttpServletRequest request) {
+      String headerAuth = request.getHeader("Authorization");
+      if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
+          return headerAuth.substring(7);
+      }
+      return null;
+  }
 
   @PostMapping("/signin")
   public ResponseEntity<?> authenticateUser(@RequestBody LoginDto loginRequest) {
@@ -71,11 +96,11 @@ public class AuthController {
                          roles));
   }
   
-  @PostMapping("/logout")
-  public ResponseEntity<?> logoutUser() {
-      // Il client dovrebbe eliminare il token JWT
-      return ResponseEntity.ok(new MessageResponse("User logged out successfully"));
-  }
+//  @PostMapping("/logout")
+//  public ResponseEntity<?> logoutUser() {
+//      // Il client dovrebbe eliminare il token JWT
+//      return ResponseEntity.ok(new MessageResponse("User logged out successfully"));
+//  }
 
   @PostMapping("/signup")
   public ResponseEntity<?> registerUser(@RequestBody SignUpDto signUpRequest) {
