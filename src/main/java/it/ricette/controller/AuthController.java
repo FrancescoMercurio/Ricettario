@@ -70,6 +70,12 @@ public class AuthController {
                          userDetails.getEmail(), 
                          roles));
   }
+  
+  @PostMapping("/logout")
+  public ResponseEntity<?> logoutUser() {
+      // Il client dovrebbe eliminare il token JWT
+      return ResponseEntity.ok(new MessageResponse("User logged out successfully"));
+  }
 
   @PostMapping("/signup")
   public ResponseEntity<?> registerUser(@RequestBody SignUpDto signUpRequest) {

@@ -21,7 +21,7 @@ public class JwtUtils {
   @Value("======================BezKoder=Spring===========================")
   private String jwtSecret;
 
-  @Value("86400000")
+  @Value("120000")
   private int jwtExpirationMs;
 
   public String generateJwtToken(Authentication authentication) {

@@ -14,6 +14,8 @@ import it.ricette.service.RicettaService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import org.springframework.security.test.context.support.WithMockUser;
+
 
 import java.util.Collections;
 import java.util.List;
@@ -35,6 +37,7 @@ public class RicettaControllerTest {
     private RicettaController ricettaController;
 
     @Test
+    @WithMockUser(roles = "USER")
     public void testGetRicettaById() throws Exception {
         RicettaDto ricettaDto = new RicettaDto();
         when(ricettaService.getRicettaById(1)).thenReturn(Optional.of(ricettaDto));
@@ -45,7 +48,28 @@ public class RicettaControllerTest {
     }
     
     @Test
+    @WithMockUser(roles = "USER")
     public void testCreateRicetta() throws Exception {
+        String ricettaJson = "{"
+            + "\"titolo\": \"pppppp\","
+            + "\"preparazione\": \"adedmin\","
+            + "\"quantitaPersone\": 1,"
+            + "\"ingredienti\": \"pasta\","
+            + "\"categoria\": {"
+            + "    \"id\": 1,"
+            + "    \"categoria\": \"primo\""
+            + "}"
+            + "}";
+
+        mockMvc.perform(post("/api/ricette/crea-ricetta")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ricettaJson))
+               .andExpect(status().isUnauthorized());
+    }
+    
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void testCreateRicettaADMIN() throws Exception {
         String ricettaJson = "{"
             + "\"titolo\": \"pppppp\","
             + "\"preparazione\": \"adedmin\","
@@ -65,6 +89,7 @@ public class RicettaControllerTest {
 
 
     @Test
+    @WithMockUser(roles = "USER")
     public void testListRicette() throws Exception {
         mockMvc.perform(get("/api/ricette/lista")
                 .param("page", "0")
@@ -74,6 +99,7 @@ public class RicettaControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     public void testFindRicetteConTitolo() throws Exception {
         List<RicettaDto> ricette = Collections.singletonList(new RicettaDto());
         when(ricettaService.findRicetteConTitolo("Test")).thenReturn(ricette);
@@ -84,7 +110,31 @@ public class RicettaControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     public void testUpdateRicetta() throws Exception {
+    	String ricettaJson = "{"
+                + "\"titolo\": \"pppppp\","
+                + "\"preparazione\": \"adedmin\","
+                + "\"quantitaPersone\": 1,"
+                + "\"ingredienti\": \"pasta\","
+                + "\"categoria\": {"
+                + "    \"id\": 1,"
+                + "    \"categoria\": \"primo\""
+                + "}"
+                + "}";
+        RicettaDto ricettaDto = new RicettaDto();
+        when(ricettaService.updateRicetta(eq(1), any(RicettaDto.class))).thenReturn(ricettaDto);
+
+        mockMvc = MockMvcBuilders.standaloneSetup(ricettaController).build();
+        mockMvc.perform(put("/api/ricette/update/1")
+                .contentType("application/json")
+                .content(ricettaJson))
+               .andExpect(status().isUnauthorized());
+    }
+    
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void testUpdateRicettaADMIN() throws Exception {
     	String ricettaJson = "{"
                 + "\"titolo\": \"pppppp\","
                 + "\"preparazione\": \"adedmin\","
@@ -106,7 +156,18 @@ public class RicettaControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     public void testDeleteRicetta() throws Exception {
+        mockMvc = MockMvcBuilders.standaloneSetup(ricettaController).build();
+        mockMvc.perform(delete("/api/ricette/delete/1"))
+               .andExpect(status().isUnauthorized());
+
+        verify(ricettaService).deleteRicetta(1);
+    }
+    
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void testDeleteRicettaADMIN() throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup(ricettaController).build();
         mockMvc.perform(delete("/api/ricette/delete/1"))
                .andExpect(status().isOk());
