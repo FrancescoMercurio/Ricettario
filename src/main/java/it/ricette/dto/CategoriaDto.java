@@ -2,7 +2,7 @@ package it.ricette.dto;
 
 public class CategoriaDto {
     private Integer id;
-    private String nomeCategoria;
+    private String categoria;
 
     public CategoriaDto() {
     }
@@ -15,16 +15,16 @@ public class CategoriaDto {
 		this.id = id;
 	}
 
-	public String getNomeCategoria() {
-		return nomeCategoria;
+	public String getCategoria() {
+		return categoria;
 	}
 
-	public void setNomeCategoria(String nomeCategoria) {
-		this.nomeCategoria = nomeCategoria;
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
 	}
 
-	public CategoriaDto(Integer id, String nomeCategoria) {
+	public CategoriaDto(Integer id, String categoria) {
         this.id = id;
-        this.nomeCategoria = nomeCategoria;
+        this.categoria = categoria;
     }
 }
