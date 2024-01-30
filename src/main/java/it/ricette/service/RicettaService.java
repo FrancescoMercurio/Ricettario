@@ -6,12 +6,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import it.ricette.dao.RicettaRepository;
+import it.ricette.dao.UserRepository;
 import it.ricette.dto.RicettaDto;
 import it.ricette.exception.NotFoundException;
 import it.ricette.mapper.CategoriaMapper;
 import it.ricette.mapper.RicettaMapper;
 import it.ricette.model.Categoria;
 import it.ricette.model.Ricetta;
+import it.ricette.model.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -27,6 +29,9 @@ public class RicettaService {
 
     @Autowired
 	private RicettaRepository repo;
+    
+    @Autowired
+	private UserRepository userRepository;
     
     @Autowired
     private RicettaMapper ricettaMapper;
@@ -91,5 +96,20 @@ public class RicettaService {
             return ricettaMapper.toDto(updatedRicetta);
         }).orElseThrow(() -> new NotFoundException("Ricetta con ID " + id + " non trovata per l'aggiornamento"));
     }
+    
+    public void addRicettaToFavorites(Integer userId, Integer ricettaId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Utente non trovato"));
+        Ricetta ricetta = repo.findById(ricettaId).orElseThrow(() -> new NotFoundException("Ricetta non trovata"));
 
+        user.getFavoriteRicette().add(ricetta);
+        userRepository.save(user);
+    }
+
+    public void removeRicettaFromFavorites(Integer userId, Integer ricettaId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Utente non trovato"));
+        Ricetta ricetta = repo.findById(ricettaId).orElseThrow(() -> new NotFoundException("Ricetta non trovata"));
+
+        user.getFavoriteRicette().remove(ricetta);
+        userRepository.save(user);
+    }
 }

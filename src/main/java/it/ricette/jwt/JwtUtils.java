@@ -21,20 +21,27 @@ public class JwtUtils {
   @Value("======================BezKoder=Spring===========================")
   private String jwtSecret;
 
-  @Value("120000")
-  private int jwtExpirationMs;
+  @Value("604800000") // 7 giorni in millisecondi
+  private int jwtExpirationMsForUser;
+
+  @Value("86400000") // 24 ore in millisecondi
+  private int jwtExpirationMsForAdmin;
 
   public String generateJwtToken(Authentication authentication) {
+	    UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
-    UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+	    int expirationMs = userPrincipal.getAuthorities().stream()
+	        .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))
+	        ? jwtExpirationMsForAdmin
+	        : jwtExpirationMsForUser;
 
-    return Jwts.builder()
-        .setSubject((userPrincipal.getUsername()))
-        .setIssuedAt(new Date())
-        .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-        .signWith(key(), SignatureAlgorithm.HS256)
-        .compact();
-  }
+	    return Jwts.builder()
+	        .setSubject(userPrincipal.getUsername())
+	        .setIssuedAt(new Date())
+	        .setExpiration(new Date((new Date()).getTime() + expirationMs))
+	        .signWith(key(), SignatureAlgorithm.HS256)
+	        .compact();
+	}
   
   private Key key() {
     return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
