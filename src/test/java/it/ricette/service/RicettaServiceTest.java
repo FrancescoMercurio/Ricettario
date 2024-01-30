@@ -10,10 +10,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import it.ricette.dao.RicettaRepository;
 import it.ricette.dto.RicettaDto;
 import it.ricette.mapper.RicettaMapper;
 import it.ricette.model.Ricetta;
+import it.ricette.repository.RicettaRepository;
 
 import java.util.Collections;
 import java.util.List;

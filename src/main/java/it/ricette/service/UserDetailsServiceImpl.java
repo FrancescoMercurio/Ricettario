@@ -7,8 +7,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import it.ricette.dao.UserRepository;
 import it.ricette.model.User;
+import it.ricette.repository.UserRepository;
 
 
 @Service

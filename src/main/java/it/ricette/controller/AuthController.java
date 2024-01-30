@@ -1,12 +1,12 @@
 package it.ricette.controller;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import it.ricette.dao.RoleRepository;
-import it.ricette.dao.UserRepository;
 import it.ricette.dto.JwtResponse;
 import it.ricette.dto.LoginDto;
 import it.ricette.dto.MessageResponse;
@@ -30,6 +28,8 @@ import it.ricette.jwt.JwtUtils;
 import it.ricette.model.ERole;
 import it.ricette.model.Role;
 import it.ricette.model.User;
+import it.ricette.repository.RoleRepository;
+import it.ricette.repository.UserRepository;
 import it.ricette.service.TokenBlacklistService;
 import it.ricette.service.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletRequest;
@@ -61,10 +61,13 @@ public class AuthController {
   public ResponseEntity<?> logoutUser(HttpServletRequest request) {
       String jwt = parseJwt(request);
       if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-          tokenBlacklistService.blacklistToken(jwt);
-          return new ResponseEntity<>("User logged out successfully", HttpStatus.OK);
+          Date expirationDate = jwtUtils.getExpirationDateFromJwtToken(jwt);
+          List<String> roles = jwtUtils.getRolesFromJwtToken(jwt);
+
+          tokenBlacklistService.blacklistToken(jwt, expirationDate, roles);
+          return ResponseEntity.ok("User logged out successfully");
       }
-      return new ResponseEntity<>("Invalid token", HttpStatus.BAD_REQUEST);
+      return ResponseEntity.badRequest().body("Invalid token");
   }
 
   private String parseJwt(HttpServletRequest request) {

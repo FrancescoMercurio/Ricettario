@@ -4,9 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import it.ricette.mapper.CategoriaMapper;
 import it.ricette.model.Categoria;
+import it.ricette.repository.CategoriaRepository;
 import it.ricette.dto.CategoriaDto;
 import it.ricette.exception.NotFoundException;
-import it.ricette.dao.CategoriaRepository;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;

@@ -5,8 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import it.ricette.dao.RicettaRepository;
-import it.ricette.dao.UserRepository;
 import it.ricette.dto.RicettaDto;
 import it.ricette.exception.NotFoundException;
 import it.ricette.mapper.CategoriaMapper;
@@ -14,6 +12,8 @@ import it.ricette.mapper.RicettaMapper;
 import it.ricette.model.Categoria;
 import it.ricette.model.Ricetta;
 import it.ricette.model.User;
+import it.ricette.repository.RicettaRepository;
+import it.ricette.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -22,6 +22,7 @@ import jakarta.persistence.criteria.Predicate;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -111,5 +112,15 @@ public class RicettaService {
 
         user.getFavoriteRicette().remove(ricetta);
         userRepository.save(user);
+    }
+    
+    public List<RicettaDto> getFavoriteRicetteByUserId(Integer userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new NotFoundException("Utente non trovato"));
+
+        Set<Ricetta> favoriteRicette = user.getFavoriteRicette();
+        return favoriteRicette.stream()
+            .map(ricettaMapper::toDto)
+            .collect(Collectors.toList());
     }
 }

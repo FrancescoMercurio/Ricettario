@@ -1,4 +1,4 @@
-package it.ricette.dao;
+package it.ricette.repository;
 
 import org.springframework.data.repository.CrudRepository;
 

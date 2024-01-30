@@ -1,15 +1,11 @@
 package it.ricette.model;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 
 @Entity
@@ -34,8 +30,8 @@ public class Ricetta {
 	@JoinColumn(name = "id_categorie")
 	private Categoria categoria;
 	
-	@ManyToMany(mappedBy = "favoriteRicette")
-    private Set<User> usersWhoFavorited = new HashSet<>();
+//	@ManyToMany(mappedBy = "favoriteRicette")
+//    private Set<User> usersWhoFavorited = new HashSet<>();
 
 	public Integer getId() {
 		return id;
@@ -85,16 +81,16 @@ public class Ricetta {
 		this.categoria = categoria;
 	}
 
-	public Set<User> getUsersWhoFavorited() {
-		return usersWhoFavorited;
-	}
-
-	public void setUsersWhoFavorited(Set<User> usersWhoFavorited) {
-		this.usersWhoFavorited = usersWhoFavorited;
-	}
+//	public Set<User> getUsersWhoFavorited() {
+//		return usersWhoFavorited;
+//	}
+//
+//	public void setUsersWhoFavorited(Set<User> usersWhoFavorited) {
+//		this.usersWhoFavorited = usersWhoFavorited;
+//	}
 
 	public Ricetta(Integer id, String titolo, Integer quantitaPersone, String preparazione, String ingredienti,
-			Categoria categoria, Set<User> usersWhoFavorited) {
+			Categoria categoria/*, Set<User> usersWhoFavorited*/) {
 		super();
 		this.id = id;
 		this.titolo = titolo;
@@ -102,7 +98,7 @@ public class Ricetta {
 		this.preparazione = preparazione;
 		this.ingredienti = ingredienti;
 		this.categoria = categoria;
-		this.usersWhoFavorited = usersWhoFavorited;
+//		this.usersWhoFavorited = usersWhoFavorited;
 	}
 
 	public Ricetta() {

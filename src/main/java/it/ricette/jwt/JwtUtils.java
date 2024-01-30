@@ -1,7 +1,10 @@
 package it.ricette.jwt;
 
 import java.security.Key;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +54,27 @@ public class JwtUtils {
     return Jwts.parserBuilder().setSigningKey(key()).build()
                .parseClaimsJws(token).getBody().getSubject();
   }
+  
+  public Date getExpirationDateFromJwtToken(String token) {
+      return Jwts.parserBuilder().setSigningKey(key()).build()
+                 .parseClaimsJws(token).getBody().getExpiration();
+  }
+
+  public List<String> getRolesFromJwtToken(String token) {
+	    Claims claims = Jwts.parserBuilder().setSigningKey(key()).build()
+	                        .parseClaimsJws(token).getBody();
+
+	    Object rolesObject = claims.get("roles");
+
+	    if (rolesObject instanceof List<?>) {
+	        List<?> rolesList = (List<?>) rolesObject;
+	        return rolesList.stream()
+	                .filter(obj -> obj instanceof String)
+	                .map(obj -> (String) obj)
+	                .collect(Collectors.toList());
+	    }
+	    return new ArrayList<>();
+	}
 
   public boolean validateJwtToken(String authToken) {
     try {
