@@ -1,5 +1,10 @@
 package it.ricette.dto;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import it.ricette.model.User;
+
 public class RicettaDto {
     private Integer id;
     private String titolo;
@@ -7,20 +12,34 @@ public class RicettaDto {
     private Integer quantitaPersone;
     private String ingredienti;
     private CategoriaDto categoria;
+    private Set<User> usersWhoFavorited = new HashSet<>();
 
     public RicettaDto() {
     }
 
-    public RicettaDto(Integer id, String titolo, String preparazione, Integer quantitaPersone, String ingredienti, CategoriaDto categoria) {
-        this.id = id;
-        this.titolo = titolo;
-        this.preparazione = preparazione;
-        this.quantitaPersone = quantitaPersone;
-        this.ingredienti = ingredienti;
-        this.categoria = categoria;
-    }
+    public RicettaDto(Integer id, String titolo, String preparazione, Integer quantitaPersone, String ingredienti,
+			CategoriaDto categoria, Set<User> usersWhoFavorited) {
+		super();
+		this.id = id;
+		this.titolo = titolo;
+		this.preparazione = preparazione;
+		this.quantitaPersone = quantitaPersone;
+		this.ingredienti = ingredienti;
+		this.categoria = categoria;
+		this.usersWhoFavorited = usersWhoFavorited;
+	}
 
-    public Integer getId() {
+
+
+	public Set<User> getUsersWhoFavorited() {
+		return usersWhoFavorited;
+	}
+
+	public void setUsersWhoFavorited(Set<User> usersWhoFavorited) {
+		this.usersWhoFavorited = usersWhoFavorited;
+	}
+
+	public Integer getId() {
         return id;
     }
 

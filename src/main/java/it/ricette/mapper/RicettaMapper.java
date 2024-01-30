@@ -3,9 +3,7 @@ package it.ricette.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import it.ricette.dto.CategoriaDto;
 import it.ricette.dto.RicettaDto;
-import it.ricette.model.Categoria;
 import it.ricette.model.Ricetta;
 
 @Mapper(componentModel = "spring", uses = {CategoriaMapper.class})
