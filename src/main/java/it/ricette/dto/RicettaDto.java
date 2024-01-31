@@ -7,24 +7,23 @@ public class RicettaDto {
     private Integer quantitaPersone;
     private String ingredienti;
     private CategoriaDto categoria;
+    private String image; // Utilizza una stringa per l'immagine in formato Base64
 //    private Set<User> usersWhoFavorited = new HashSet<>();
 
     public RicettaDto() {
     }
 
-    public RicettaDto(Integer id, String titolo, String preparazione, Integer quantitaPersone, String ingredienti,
-			CategoriaDto categoria/*, Set<User> usersWhoFavorited*/) {
-		super();
-		this.id = id;
-		this.titolo = titolo;
-		this.preparazione = preparazione;
-		this.quantitaPersone = quantitaPersone;
-		this.ingredienti = ingredienti;
-		this.categoria = categoria;
-//		this.usersWhoFavorited = usersWhoFavorited;
-	}
-
-
+public RicettaDto(Integer id, String titolo, String preparazione, Integer quantitaPersone, String ingredienti,
+		CategoriaDto categoria, String image) {
+	super();
+	this.id = id;
+	this.titolo = titolo;
+	this.preparazione = preparazione;
+	this.quantitaPersone = quantitaPersone;
+	this.ingredienti = ingredienti;
+	this.categoria = categoria;
+	this.image = image;
+}
 
 //	public Set<User> getUsersWhoFavorited() {
 //		return usersWhoFavorited;
@@ -80,5 +79,13 @@ public class RicettaDto {
 
     public void setCategoria(CategoriaDto categoria) {
         this.categoria = categoria;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

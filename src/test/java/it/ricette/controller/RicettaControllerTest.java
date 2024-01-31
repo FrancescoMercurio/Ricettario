@@ -19,7 +19,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
@@ -40,7 +39,7 @@ public class RicettaControllerTest {
     @WithMockUser(roles = "USER")
     public void testGetRicettaById() throws Exception {
         RicettaDto ricettaDto = new RicettaDto();
-        when(ricettaService.getRicettaById(1)).thenReturn(Optional.of(ricettaDto));
+        when(ricettaService.getRicettaById(1)).thenReturn(ricettaDto);
 
         mockMvc = MockMvcBuilders.standaloneSetup(ricettaController).build();
         mockMvc.perform(get("/api/ricette/get/1"))

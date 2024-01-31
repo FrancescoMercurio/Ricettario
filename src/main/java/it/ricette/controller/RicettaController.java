@@ -23,17 +23,9 @@ public class RicettaController {
     @Autowired
     private RicettaService ricettaService;
 
-    @PostMapping("/crea-ricetta")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")//@Secured("ROLE_ADMIN")
-    public ResponseEntity<RicettaDto> createRicetta(@RequestBody RicettaDto ricettaDto) {
-        RicettaDto savedRicettaDto = ricettaService.saveRicetta(ricettaDto);
-        return ResponseEntity.ok(savedRicettaDto);
-    }
-
     @GetMapping("/get/{id}")
     public ResponseEntity<RicettaDto> getRicettaById(@PathVariable Integer id) {
-        RicettaDto ricettaDto = ricettaService.getRicettaById(id)
-                                              .orElseThrow(() -> new NotFoundException("Ricetta con ID " + id + " non trovata"));
+        RicettaDto ricettaDto = ricettaService.getRicettaById(id);                                            
         return ResponseEntity.ok(ricettaDto);
     }
 
@@ -47,6 +39,13 @@ public class RicettaController {
     public ResponseEntity<List<RicettaDto>> findRicetteConTitolo(@RequestParam String titolo) {
         List<RicettaDto> ricette = ricettaService.findRicetteConTitolo(titolo);
         return ResponseEntity.ok(ricette);
+    }
+    
+    @PostMapping("/crea-ricetta")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<RicettaDto> createRicetta(@RequestBody RicettaDto ricettaDto) {
+        RicettaDto savedRicettaDto = ricettaService.saveRicetta(ricettaDto);
+        return ResponseEntity.ok(savedRicettaDto);
     }
 
     @PutMapping("/update/{id}")
@@ -62,6 +61,30 @@ public class RicettaController {
         ricettaService.deleteRicetta(id);
         return ResponseEntity.ok().build();
     }
+    
+//    @GetMapping("/{ricettaId}/getImage")
+//    public ResponseEntity<?> getImage(@PathVariable Integer ricettaId) {
+//        try {
+//            RicettaDto ricettaDto = ricettaService.getImage(ricettaId);
+//            return ResponseEntity.ok(ricettaDto.getImage());
+//        } catch (RuntimeException e) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+//        }
+//    }
+//
+//    @PostMapping("/{ricettaId}/saveImage")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    public ResponseEntity<?> saveImage(@PathVariable Integer ricettaId, @RequestParam("image") MultipartFile file) {
+//        try {
+//            byte[] imageBytes = file.getBytes();
+//            RicettaDto ricettaDto = ricettaService.saveImage(ricettaId, imageBytes);
+//            return ResponseEntity.ok(ricettaDto);
+//        } catch (IOException e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore nel salvataggio dell'immagine");
+//        } catch (RuntimeException e) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+//        }
+//    }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<?> handleNotFoundException(NotFoundException ex) {

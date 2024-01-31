@@ -57,7 +57,7 @@ public class RicettaServiceTest {
         when(ricettaRepository.findById(ricettaId)).thenReturn(Optional.of(ricetta));
         when(ricettaMapper.toDto(ricetta)).thenReturn(ricettaDto);
 
-        Optional<RicettaDto> result = ricettaService.getRicettaById(ricettaId);
+        Optional<RicettaDto> result = Optional.ofNullable(ricettaService.getRicettaById(ricettaId));
 
         assertTrue(result.isPresent());
         assertEquals(ricettaDto, result.get());

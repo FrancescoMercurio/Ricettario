@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 
 @Entity
@@ -29,6 +30,10 @@ public class Ricetta {
 	@ManyToOne
 	@JoinColumn(name = "id_categorie")
 	private Categoria categoria;
+	
+	@Lob
+    @Column(name = "image", columnDefinition = "TEXT") // Utilizza il tipo di colonna TEXT per la stringa Base64
+    private String image;
 	
 //	@ManyToMany(mappedBy = "favoriteRicette")
 //    private Set<User> usersWhoFavorited = new HashSet<>();
@@ -89,8 +94,16 @@ public class Ricetta {
 //		this.usersWhoFavorited = usersWhoFavorited;
 //	}
 
+	public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
 	public Ricetta(Integer id, String titolo, Integer quantitaPersone, String preparazione, String ingredienti,
-			Categoria categoria/*, Set<User> usersWhoFavorited*/) {
+			Categoria categoria, String image) {
 		super();
 		this.id = id;
 		this.titolo = titolo;
@@ -98,7 +111,7 @@ public class Ricetta {
 		this.preparazione = preparazione;
 		this.ingredienti = ingredienti;
 		this.categoria = categoria;
-//		this.usersWhoFavorited = usersWhoFavorited;
+		this.image = image;
 	}
 
 	public Ricetta() {

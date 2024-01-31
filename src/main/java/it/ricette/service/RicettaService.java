@@ -15,13 +15,13 @@ import it.ricette.model.User;
 import it.ricette.repository.RicettaRepository;
 import it.ricette.repository.UserRepository;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Predicate;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,16 +46,25 @@ public class RicettaService {
     public RicettaService(RicettaRepository ricettaRepository) {
         this.repo = ricettaRepository;
     }
+    
+//    public RicettaDto getImage(Integer id) {
+//        Ricetta ricetta = repo.findById(id)
+//                .orElseThrow(() -> new RuntimeException("Ricetta non trovata"));
+//        return ricettaMapper.toDto(ricetta);
+//    }
+//
+//    public RicettaDto saveImage(Integer id, byte[] image) {
+//        Ricetta ricetta = repo.findById(id)
+//                .orElseThrow(() -> new RuntimeException("Ricetta non trovata"));
+//        ricetta.setImage(image);
+//        repo.save(ricetta);
+//        return ricettaMapper.toDto(ricetta);
+//    }
 
-    public RicettaDto saveRicetta(RicettaDto ricettaDto) {
-        Ricetta ricetta = ricettaMapper.toEntity(ricettaDto);
-        Ricetta savedRicetta = repo.save(ricetta);
-        return ricettaMapper.toDto(savedRicetta);
-    }
-
-    public Optional<RicettaDto> getRicettaById(Integer id) {
+    public RicettaDto getRicettaById(Integer id) {
         return repo.findById(id)
-                   .map(ricettaMapper::toDto);
+                   .map(ricettaMapper::toDto)
+                   .orElseThrow(() -> new EntityNotFoundException("Ricetta non trovata con ID: " + id));
     }
 
     public Page<RicettaDto> getPaginatedRicette(Pageable pageable) {
@@ -73,6 +82,12 @@ public class RicettaService {
         return ricette.stream()
                       .map(ricettaMapper::toDto)
                       .collect(Collectors.toList());
+    }
+    
+    public RicettaDto saveRicetta(RicettaDto ricettaDto) {
+        Ricetta ricetta = ricettaMapper.toEntity(ricettaDto);
+        Ricetta savedRicetta = repo.save(ricetta);
+        return ricettaMapper.toDto(savedRicetta);
     }
 
     public void deleteRicetta(Integer id) {
@@ -92,7 +107,13 @@ public class RicettaService {
             }
             existingRicetta.setIngredienti(ricettaDto.getIngredienti());
             existingRicetta.setPreparazione(ricettaDto.getPreparazione());
-            
+
+            if (ricettaDto.getImage() != null) {
+            	existingRicetta.setImage(ricettaDto.getImage());
+            }else {
+            	existingRicetta.setImage("");
+            }
+
             Ricetta updatedRicetta = repo.save(existingRicetta);
             return ricettaMapper.toDto(updatedRicetta);
         }).orElseThrow(() -> new NotFoundException("Ricetta con ID " + id + " non trovata per l'aggiornamento"));
