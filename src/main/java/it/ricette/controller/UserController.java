@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import it.ricette.dto.RicettaDto;
 import it.ricette.service.RicettaService;
@@ -21,6 +22,7 @@ import it.ricette.service.UserDetailsImpl;
 
 @RestController
 @RequestMapping("/api/utenti")
+@CrossOrigin // Abilita CORS per tutti i metodi in questa classe
 public class UserController {
 
     @Autowired

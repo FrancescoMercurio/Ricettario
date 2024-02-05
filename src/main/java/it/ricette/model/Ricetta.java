@@ -32,7 +32,7 @@ public class Ricetta {
 	private Categoria categoria;
 	
 	@Lob
-    @Column(name = "image", columnDefinition = "TEXT") // Utilizza il tipo di colonna TEXT per la stringa Base64
+    @Column(name = "image", columnDefinition = "TEXT")
     private String image;
 	
 //	@ManyToMany(mappedBy = "favoriteRicette")
