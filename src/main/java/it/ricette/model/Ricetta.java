@@ -21,7 +21,7 @@ public class Ricetta {
 	@Column(name = "quantitaPersone")
 	private Integer quantitaPersone;
 	
-	@Column(name = "preparazione")
+	@Column(name = "preparazione", columnDefinition = "LONGTEXT")
 	private String preparazione;
 	
 	@Column(name = "ingredienti")
@@ -32,7 +32,7 @@ public class Ricetta {
 	private Categoria categoria;
 	
 	@Lob
-    @Column(name = "image", columnDefinition = "TEXT")
+    @Column(name = "image", columnDefinition = "LONGTEXT")
     private String image;
 	
 //	@ManyToMany(mappedBy = "favoriteRicette")
